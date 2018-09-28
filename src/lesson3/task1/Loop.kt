@@ -2,6 +2,9 @@
 
 package lesson3.task1
 
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 /**
@@ -68,11 +71,12 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
+    var n1 = n
     var count = 0
     do {
         count++
-        n / 10
-    } while (n > 0)
+        n1 /= 10
+    } while (n1 > 0)
     return count
 }
 
@@ -86,14 +90,14 @@ fun fib(n: Int): Int {
     var fib1 = 1
     var fib2 = 1
     var fib3: Int
-    var fibn = 0
+    var fibN = 0
     for (i in 1..n) {
-        fibn = fib1
+        fibN = fib1
         fib3 = fib1 + fib2
         fib1 = fib2
         fib2 = fib3
     }
-    return fibn
+    return fibN
 }
 
 /**
@@ -183,10 +187,11 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  * этого для какого-либо начального X > 0.
  */
 fun collatzSteps(x: Int): Int {
+    var x1 = x
     var count = 0
-    while (x != 1) {
+    while (x1 != 1) {
         count++
-        if (x % 2 == 0) x / 2 else 3 * x + 1
+        if (x1 % 2 == 0) x1 /= 2 else x1 = 3 * x1 + 1
     }
     return count
 
@@ -199,7 +204,21 @@ fun collatzSteps(x: Int): Int {
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var x1 = x
+    var power = 1
+    var result = 0.0
+    var member = eps * 2
+    while (x1 >= 2 * PI) {
+        x1 -= 2 * PI
+    }
+    while (abs(member) > eps) {
+        member = x1.pow(2 * power - 1) / factorial(2 * power - 1)
+        if (power % 2 == 1) result += member else result -= member
+        power++
+    }
+    return result
+}
 
 /**
  * Средняя
@@ -208,7 +227,21 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    var x1 = x
+    var power = 0
+    var result = 0.0
+    var member = eps * 2
+    while (x1 >= 2 * PI) {
+        x1 -= 2 * PI
+    }
+    while (abs(member) > eps) {
+        member = x1.pow(2 * power) / factorial(2 * power)
+        if (power % 2 == 0) result += member else result -= member
+        power++
+    }
+    return result
+}
 
 /**
  * Средняя
@@ -217,7 +250,22 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var count = 0
+    var n1 = n
+    var res = 0
+    while (n1 > 0) {
+        count++
+        n1 /= 10
+    }
+    n1 = n
+    for (i in 1..count) {
+        res *= 10
+        res += (n1 % 10)
+        n1 /= 10
+    }
+    return res
+}
 
 /**
  * Средняя
@@ -228,7 +276,22 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    var count = 0
+    var n1 = n
+    var res = 0
+    while (n1 > 0) {
+        count++
+        n1 /= 10
+    }
+    n1 = n
+    for (i in 1..count) {
+        res *= 10
+        res += (n1 % 10)
+        n1 /= 10
+    }
+    return n == res
+}
 
 /**
  * Средняя
@@ -238,7 +301,20 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var count = 0
+    var n1 = n
+    while (n1 > 0) {
+        count++
+        n1 /= 10
+    }
+    n1 = n
+    for (i in 2..count) {
+        if (n1 % 10 != n1 / 10 % 10) return true
+        n1 /= 10
+    }
+    return false
+}
 
 /**
  * Сложная
@@ -249,7 +325,27 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var length = 0
+    var i = 0
+    var i2 = 0
+    var i1: Int
+    do {
+        i++
+        i1 = i * i
+        while (i1 > 0) {
+            length++
+            i1 /= 10
+        }
+    } while (length < n)
+    i1 = i * i
+    if (length == n) return i1 % 10
+    for (j in 1..length - n) {
+        i1 /= 10
+        i2 = i1 % 10
+    }
+    return i2
+}
 
 /**
  * Сложная
@@ -260,4 +356,24 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var length = 0
+    var i = 0
+    var i2 = 0
+    var i1: Int
+    do {
+        i++
+        i1 = fib(i)
+        while (i1 > 0) {
+            length++
+            i1 /= 10
+        }
+    } while (length < n)
+    i1 = fib(i)
+    if (length == n) return i1 % 10
+    for (j in 1..length - n) {
+        i1 /= 10
+        i2 = i1 % 10
+    }
+    return i2
+}

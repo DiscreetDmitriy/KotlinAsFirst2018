@@ -71,7 +71,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var n1 = n
+    var n1 = abs(n)
     var count = 0
     do {
         count++
@@ -136,7 +136,7 @@ fun minDivisor(n: Int): Int {
  */
 fun maxDivisor(n: Int): Int {
     for (i in n / 2 + 1 downTo 2) {
-        if (n % i == 0) return i
+        if (n % i == 0 && n > 3) return i
     }
     return 1
 }
@@ -165,6 +165,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     for (i in m..n) {
+        if (i == 0) return true
         if (i.toDouble() / sqrt(i.toDouble()).toInt() == sqrt(i.toDouble())) return true
     }
     return false
@@ -205,14 +206,11 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var x1 = x
     var power = 1
     var result = 0.0
-    var member = eps * 2
-    while (x1 >= 2 * PI) {
-        x1 -= 2 * PI
-    }
-    while (abs(member) > eps) {
+    var member = eps * 1.5
+    val x1 = x % (2 * PI)
+    while (member > eps) {
         member = x1.pow(2 * power - 1) / factorial(2 * power - 1)
         if (power % 2 == 1) result += member else result -= member
         power++
@@ -228,13 +226,10 @@ fun sin(x: Double, eps: Double): Double {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun cos(x: Double, eps: Double): Double {
-    var x1 = x
+    val x1 = x % (2 * PI)
     var power = 0
     var result = 0.0
     var member = eps * 2
-    while (x1 >= 2 * PI) {
-        x1 -= 2 * PI
-    }
     while (abs(member) > eps) {
         member = x1.pow(2 * power) / factorial(2 * power)
         if (power % 2 == 0) result += member else result -= member
@@ -328,23 +323,23 @@ fun hasDifferentDigits(n: Int): Boolean {
 fun squareSequenceDigit(n: Int): Int {
     var length = 0
     var i = 0
-    var i2 = 0
-    var i1: Int
+    var num = 0
+    var sqrNum: Int
     do {
         i++
-        i1 = i * i
-        while (i1 > 0) {
+        sqrNum = i * i
+        while (sqrNum > 0) {
             length++
-            i1 /= 10
+            sqrNum /= 10
         }
     } while (length < n)
-    i1 = i * i
-    if (length == n) return i1 % 10
+    sqrNum = i * i
+    if (length == n) return sqrNum % 10
     for (j in 1..length - n) {
-        i1 /= 10
-        i2 = i1 % 10
+        sqrNum /= 10
+        num = sqrNum % 10
     }
-    return i2
+    return num
 }
 
 /**
@@ -359,21 +354,21 @@ fun squareSequenceDigit(n: Int): Int {
 fun fibSequenceDigit(n: Int): Int {
     var length = 0
     var i = 0
-    var i2 = 0
-    var i1: Int
+    var num = 0
+    var fibNum: Int
     do {
         i++
-        i1 = fib(i)
-        while (i1 > 0) {
+        fibNum = fib(i)
+        while (fibNum > 0) {
             length++
-            i1 /= 10
+            fibNum /= 10
         }
     } while (length < n)
-    i1 = fib(i)
-    if (length == n) return i1 % 10
+    fibNum = fib(i)
+    if (length == n) return fibNum % 10
     for (j in 1..length - n) {
-        i1 /= 10
-        i2 = i1 % 10
+        fibNum /= 10
+        num = fibNum % 10
     }
-    return i2
+    return num
 }

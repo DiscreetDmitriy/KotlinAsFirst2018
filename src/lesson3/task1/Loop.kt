@@ -208,7 +208,7 @@ fun collatzSteps(x: Int): Int {
 fun sin(x: Double, eps: Double): Double {
     var power = 1
     var result = 0.0
-    var member = eps * 1.5
+    var member = eps * 2
     val x1 = x % (2 * PI)
     while (member > eps) {
         member = x1.pow(2 * power - 1) / factorial(2 * power - 1)

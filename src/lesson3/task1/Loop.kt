@@ -145,7 +145,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     if (m == n) return true
-    return m * n == lcm(m, n)
+    return lcm(m, n) / (m * n) == 1
 }
 
 
@@ -198,11 +198,12 @@ fun collatzSteps(x: Int): Int {
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
+// почему он не работает?
 fun sin(x: Double, eps: Double): Double {
     var power = 1
     var result = 0.0
     var member = eps * 1.1
-    val x1 = abs(x) % (2 * PI)
+    val x1 = x % (2 * PI)
     while (member > eps) {
         member = x1.pow(2 * power - 1) / factorial(2 * power - 1)
         if (power % 2 == 1) result += member else result -= member

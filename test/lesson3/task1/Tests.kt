@@ -90,7 +90,6 @@ class Tests {
     @Test
     @Tag("Easy")
     fun lcm() {
-        assertEquals(1344101892, lcm(96124, 55932))
         assertEquals(13, lcm(13, 13))
         assertEquals(8, lcm(2, 8))
         assertEquals(24, lcm(6, 8))

@@ -106,16 +106,8 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var mn = m * n
-    var result = mn
-    val a = if (m >= n) m else n
-    while (mn > a) {
-        mn -= a
-        if (mn % m == 0 && mn % n == 0) result = mn
-    }
-    return result
-}
+
+fun lcm(m: Int, n: Int): Int = m * n / nod(m, n)
 
 /**
  * Простая
@@ -145,7 +137,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     if (m == n) return true
-    return lcm(m, n) / (m * n) == 1
+    return nod(m, n) == 1
 }
 
 
@@ -198,13 +190,13 @@ fun collatzSteps(x: Int): Int {
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-// почему он не работает?
+
 fun sin(x: Double, eps: Double): Double {
     var power = 1
     var result = 0.0
     var member = eps * 1.1
     val x1 = x % (2 * PI)
-    while (member > eps) {
+    while (abs(member) >= eps) {
         member = x1.pow(2 * power - 1) / factorial(2 * power - 1)
         if (power % 2 == 1) result += member else result -= member
         power++
@@ -224,7 +216,7 @@ fun cos(x: Double, eps: Double): Double {
     var power = 0
     var result = 0.0
     var member = eps * 2
-    while (abs(member) > eps) {
+    while (abs(member) >= eps) {
         member = x1.pow(2 * power) / factorial(2 * power)
         if (power % 2 == 0) result += member else result -= member
         power++
@@ -350,4 +342,15 @@ fun fibSequenceDigit(n: Int): Int {
         num = fibNum % 10
     }
     return num
+}
+
+fun nod(m: Int, n: Int): Int {
+    var a = abs(m)
+    var b = abs(n)
+
+    while (a != b) {
+        if (a > b) a -= b
+        else b -= a
+    }
+    return a
 }

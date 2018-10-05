@@ -109,7 +109,7 @@ fun fib(n: Int): Int {
 fun lcm(m: Int, n: Int): Int {
     var mn = m * n
     var result = mn
-    val a: Int = if (m >= n) m else n
+    val a = if (m >= n) m else n
     while (mn > a) {
         mn -= a
         if (mn % m == 0 && mn % n == 0) result = mn
@@ -134,12 +134,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    for (i in n / 2 + 1 downTo 2) {
-        if (n % i == 0 && n > 3) return i
-    }
-    return 1
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -148,13 +143,9 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    val max = if (m >= n) m else n
-    for (i in 2..max / 2 + 1) {
-        if (n % i == 0 && m % i == 0) return false
-    }
-    return true
-}
+fun isCoPrime(m: Int, n: Int): Boolean =
+        m * n == lcm(m, n)
+
 
 /**
  * Простая
@@ -165,8 +156,8 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     for (i in m..n) {
-        if (i == 0) return true
-        if (i.toDouble() / sqrt(i.toDouble()).toInt() == sqrt(i.toDouble())) return true
+        if (n <= 1) return true
+        if (i.toDouble() % sqrt(i.toDouble()) == 0.0) return true
     }
     return false
 }
@@ -208,8 +199,8 @@ fun collatzSteps(x: Int): Int {
 fun sin(x: Double, eps: Double): Double {
     var power = 1
     var result = 0.0
-    var member = eps * 2
-    val x1 = x % (2 * PI)
+    var member = eps * 1.1
+    val x1 = abs(x) % (2 * PI)
     while (member > eps) {
         member = x1.pow(2 * power - 1) / factorial(2 * power - 1)
         if (power % 2 == 1) result += member else result -= member
@@ -271,22 +262,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var count = 0
-    var n1 = n
-    var res = 0
-    while (n1 > 0) {
-        count++
-        n1 /= 10
-    }
-    n1 = n
-    for (i in 1..count) {
-        res *= 10
-        res += (n1 % 10)
-        n1 /= 10
-    }
-    return n == res
-}
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
 /**
  * Средняя

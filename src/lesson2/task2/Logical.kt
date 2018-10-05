@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson2.task2
 
 import lesson1.task1.sqr
@@ -63,4 +64,8 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = (a <= r && b <= s || a <= s && b <= r) || (a <= r && c <= s || a <= s && c <= r) || (b <= r && c <= s || b <= s && c <= r)
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+    val listSides = listOf(a, b, c).sorted()
+    val listHoles = listOf(r, s).sorted()
+    return listSides[1] <= listHoles[1] && listSides[0] <= listHoles[0]
+}

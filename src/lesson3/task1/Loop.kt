@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import lesson1.task1.sqr
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.pow
@@ -107,7 +108,7 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 
-fun lcm(m: Int, n: Int): Int = m * n / nod(m, n)
+fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
 
 /**
  * Простая
@@ -137,7 +138,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     if (m == n && m < 2) return true
-    return nod(m, n) == 1
+    return gcd(m, n) == 1
 }
 
 
@@ -149,11 +150,10 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    for (i in m..n) {
-        if (n <= 1) return true
-        if (i.toDouble() % sqrt(i.toDouble()) == 0.0) return true
-    }
-    return false
+    if (n <= 2) return true
+    val sqrtM = sqrt(m.toDouble()).toInt()
+    val sqrtN = sqrt(n.toDouble()).toInt()
+    return sqr(sqrtM) == m || sqr(sqrtN) == n || sqrtM != sqrtN
 }
 
 /**
@@ -344,7 +344,7 @@ fun fibSequenceDigit(n: Int): Int {
     return num
 }
 
-fun nod(m: Int, n: Int): Int {
+fun gcd(m: Int, n: Int): Int {
     var a = abs(m)
     var b = abs(n)
 

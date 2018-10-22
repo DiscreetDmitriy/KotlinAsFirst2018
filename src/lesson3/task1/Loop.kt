@@ -108,7 +108,7 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 
-fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
+fun lcm(m: Int, n: Int): Int = m / gcd(m, n) * n
 
 /**
  * Простая
@@ -150,7 +150,6 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    if (n <= 2) return true
     val sqrtM = sqrt(m.toDouble()).toInt()
     val sqrtN = sqrt(n.toDouble()).toInt()
     return sqr(sqrtM) == m || sqr(sqrtN) == n || sqrtM != sqrtN
@@ -231,16 +230,11 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
+
 fun revert(n: Int): Int {
-    var count = 0
     var n1 = n
     var res = 0
-    while (n1 > 0) {
-        count++
-        n1 /= 10
-    }
-    n1 = n
-    for (i in 1..count) {
+    for (i in 1..digitNumber(n)) {
         res *= 10
         res += (n1 % 10)
         n1 /= 10
@@ -268,14 +262,8 @@ fun isPalindrome(n: Int): Boolean = n == revert(n)
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    var count = 0
     var n1 = n
-    while (n1 > 0) {
-        count++
-        n1 /= 10
-    }
-    n1 = n
-    for (i in 2..count) {
+    for (i in 2..digitNumber(n)) {
         if (n1 % 10 != n1 / 10 % 10) return true
         n1 /= 10
     }
@@ -299,12 +287,8 @@ fun squareSequenceDigit(n: Int): Int {
     do {
         i++
         sqrNum = i * i
-        while (sqrNum > 0) {
-            length++
-            sqrNum /= 10
-        }
+        length += digitNumber(sqrNum)
     } while (length < n)
-    sqrNum = i * i
     if (length == n) return sqrNum % 10
     for (j in 1..length - n) {
         sqrNum /= 10
@@ -330,10 +314,7 @@ fun fibSequenceDigit(n: Int): Int {
     do {
         i++
         fibNum = fib(i)
-        while (fibNum > 0) {
-            length++
-            fibNum /= 10
-        }
+        length += digitNumber(fibNum)
     } while (length < n)
     fibNum = fib(i)
     if (length == n) return fibNum % 10

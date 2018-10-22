@@ -5,6 +5,7 @@ package lesson4.task1
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import lesson3.task1.isPrime
+import lesson3.task1.maxDivisor
 import lesson3.task1.revert
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -126,8 +127,7 @@ fun abs(v: List<Double>): Double = sqrt(v.map { sqr(it) }.sum())
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-
-fun mean(list: List<Double>): Double = list.sum() / list.size
+fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() / list.size
 
 /**
  * Средняя
@@ -198,14 +198,13 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    if (isPrime(n)) return listOf(n)
+    if (n <= 2) return listOf(n)
     val list = mutableListOf<Int>()
     var n1 = n
-    for (i in 2..n1 / 2) {
-        while (n1 % i == 0) {
-            n1 /= i
-            list.add(i)
-        }
+    for (i in 2..maxDivisor(n1)) while (n1 % i == 0) {
+        n1 /= i
+        list.add(i)
+        if (i == n) return listOf(n)
     }
     return list.sorted()
 }
@@ -246,12 +245,11 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
+    var res = ""
     val list = convert(n, base)
-    val alphabet =
-            listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
-    list.map { fun(i: Int): String = if (i > 9) alphabet[i - 10].toString() else i.toString() }
-    return list.joinToString(separator = "")
-    //не понимаю, как 10 перевести в а
+    for (a in list) res += if (a > 9) (a + 87).toChar()
+    else a.toString()
+    return res
 }
 
 /**
@@ -261,7 +259,14 @@ fun convertToString(n: Int, base: Int): String {
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    var res = 0
+    val list = digits.reversed()
+    for (i in 0 until digits.size) {
+        res += list[i] * base.toDouble().pow(i).toInt()
+    }
+    return res
+}
 
 /**
  * Сложная
@@ -272,7 +277,17 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    var res = 0
+    for ((i, char) in str.withIndex()) {
+        res += base.toDouble().pow(str.length - i - 1).toInt() * if (char.toInt() - 87 < 10) {
+            (char - 48).toInt()
+        } else {
+            (char - 87).toInt()
+        }
+    }
+    return res
+}
 
 /**
  * Сложная
@@ -282,7 +297,52 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    var n1 = n
+    var str = ""
+    while (n1 > 0) when {
+        n1 >= 1000 -> {
+            str += "M"; n1 -= 1000
+        }
+        n1 >= 900 -> {
+            str += "CM"; n1 -= 900
+        }
+        n1 >= 500 -> {
+            str += "D"; n1 -= 500
+        }
+        n1 >= 400 -> {
+            str += "CD"; n1 -= 400
+        }
+        n1 >= 100 -> {
+            str += "C"; n1 -= 100
+        }
+        n1 >= 90 -> {
+            str += "XC"; n1 -= 90
+        }
+        n1 >= 50 -> {
+            str += "L"; n1 -= 50
+        }
+        n1 >= 40 -> {
+            str += "XL"; n1 -= 40
+        }
+        n1 >= 10 -> {
+            str += "X"; n1 -= 10
+        }
+        n1 == 9 -> {
+            str += "IX"; n1 -= 9
+        }
+        n1 >= 5 -> {
+            str += "V"; n1 -= 5
+        }
+        n1 == 4 -> {
+            str += "IV"; n1 -= 4
+        }
+        else -> {
+            str += "I"; n1 -= 1
+        }
+    }
+    return str
+}
 
 /**
  * Очень сложная
@@ -291,4 +351,88 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    var n1 = n
+    var res1 = ""
+    var res2 = ""
+    res1 += d(n1) + if (n1 % 100 in 11..19) b(n1) else c(n1) + a(n1)
+    n1 /= 1000
+    if (n1 > 0) res2 += d(n1) + (if (n1 % 100 in 11..19) b(n1) else c(n1) + e(n1)) + when {
+        n1 % 10 == 1 -> "тысяча "
+        n1 % 10 in 2..4 -> "тысячи "
+        else -> "тысяч "
+    }
+    return (res2 + res1).trim()
+}
+
+fun a(n: Int): String =
+        when (n % 10) {
+            1 -> "один "
+            2 -> "два "
+            3 -> "три "
+            4 -> "четыре "
+            5 -> "пять "
+            6 -> "шесть "
+            7 -> "семь "
+            8 -> "восемь "
+            9 -> "девять "
+            else -> ""
+        }
+
+fun b(n: Int): String =
+        when (n % 100) {
+            11 -> "одиннадцать "
+            12 -> "двенадцать "
+            13 -> "тринадцать "
+            14 -> "четырнадцать "
+            15 -> "пятнадцать "
+            16 -> "шестнадцать "
+            17 -> "семнадцать "
+            18 -> "восемнадцать "
+            19 -> "девятнадцать "
+            else -> ""
+        }
+
+fun c(n: Int): String =
+        when (n / 10 % 10) {
+            1 -> "десять "
+            2 -> "двадцать "
+            3 -> "тридцать "
+            4 -> "сорок "
+            5 -> "пятьдесят "
+            6 -> "шестьдесят "
+            7 -> "семьдесят "
+            8 -> "восемьдесят "
+            9 -> "девяносто "
+            else -> ""
+        }
+
+fun d(n: Int): String =
+        when (n / 100 % 10) {
+            1 -> "сто "
+            2 -> "двести "
+            3 -> "триста "
+            4 -> "четыреста "
+            5 -> "пятьсот "
+            6 -> "шестьсот "
+            7 -> "семьсот "
+            8 -> "восемьсот "
+            9 -> "девятьсот "
+            else -> ""
+        }
+
+fun e(n: Int): String =
+        when (n % 10) {
+            1 -> "одна "
+            2 -> "две "
+            3 -> "три "
+            4 -> "четыре "
+            5 -> "пят ь"
+            6 -> "шесть "
+            7 -> "семь "
+            8 -> "восемь "
+            9 -> "девять "
+            else -> ""
+        }
+
+

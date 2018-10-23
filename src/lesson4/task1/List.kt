@@ -138,9 +138,8 @@ fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() /
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val sum = list.sum()
-    val size = list.size
-    for (i in 0 until size) list[i] -= sum / size
+    val average = list.sum() / list.size
+    list.replaceAll { it -> it - average }
     return list
 }
 
@@ -179,10 +178,7 @@ fun polynom(p: List<Double>, x: Double): Double = p.mapIndexed { index, acc -> a
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
     var sum = 0.0
-    for (index in 0 until list.size) {
-        sum += list[index]
-        list[index] = sum
-    }
+    list.forEachIndexed { index, _ -> sum += list[index]; list[index] = sum; }
     return list
 }
 
@@ -239,13 +235,9 @@ fun convert(n: Int, base: Int): List<Int> {
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
-fun convertToString(n: Int, base: Int): String {
-    var res = ""
-    val list = convert(n, base)
-    for (a in list) res += if (a > 9) (a + 87).toChar()
-    else a.toString()
-    return res
-}
+fun convertToString(n: Int, base: Int): String =
+        convert(n, base)
+                .joinToString(separator = "") { if (it > 9) "${it.toChar() + 87}" else "$it" }
 
 /**
  * Средняя
@@ -254,15 +246,8 @@ fun convertToString(n: Int, base: Int): String {
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int {
-//    return digits.foldRightIndexed(0) { index, i, acc -> acc + i * base.toDouble().pow(index).toInt() }
-    var res = 0
-    val list = digits.reversed()
-    for (i in 0 until digits.size) {
-        res += list[i] * base.toDouble().pow(i).toInt()
-    }
-    return res
-}
+fun decimal(digits: List<Int>, base: Int): Int =
+        digits.reversed().foldRightIndexed(0) { index, i, acc -> acc + i * base.toDouble().pow(index).toInt() }
 
 /**
  * Сложная
@@ -294,48 +279,15 @@ fun decimalFromString(str: String, base: Int): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 fun roman(n: Int): String {
+    val romanDigits = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val arabianDigits = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
     var n1 = n
     var str = ""
-    while (n1 > 0) when {
-        n1 >= 1000 -> {
-            str += "M"; n1 -= 1000
-        }
-        n1 >= 900 -> {
-            str += "CM"; n1 -= 900
-        }
-        n1 >= 500 -> {
-            str += "D"; n1 -= 500
-        }
-        n1 >= 400 -> {
-            str += "CD"; n1 -= 400
-        }
-        n1 >= 100 -> {
-            str += "C"; n1 -= 100
-        }
-        n1 >= 90 -> {
-            str += "XC"; n1 -= 90
-        }
-        n1 >= 50 -> {
-            str += "L"; n1 -= 50
-        }
-        n1 >= 40 -> {
-            str += "XL"; n1 -= 40
-        }
-        n1 >= 10 -> {
-            str += "X"; n1 -= 10
-        }
-        n1 == 9 -> {
-            str += "IX"; n1 -= 9
-        }
-        n1 >= 5 -> {
-            str += "V"; n1 -= 5
-        }
-        n1 == 4 -> {
-            str += "IV"; n1 -= 4
-        }
-        else -> {
-            str += "I"; n1 -= 1
-        }
+    var i = 0
+    while (n1 > 0) {
+        while (arabianDigits[i] > n1) i++
+        str += romanDigits[i]
+        n1 -= arabianDigits[i]
     }
     return str
 }
@@ -351,17 +303,18 @@ fun russian(n: Int): String {
     var n1 = n
     var res1 = ""
     var res2 = ""
-    res1 += d(n1) + if (n1 % 100 in 11..19) b(n1) else c(n1) + a(n1)
+    res1 += hundreds(n1) +
+            if (n1 % 100 in 11..19) lastTwoDigits(n1)
+            else secondLastDigit(n1) + lastDigit(n1)
     n1 /= 1000
-    if (n1 > 0) res2 += d(n1) + (if (n1 % 100 in 11..19) b(n1) else c(n1) + e(n1)) + when {
-        n1 % 10 == 1 && n1 % 100 != 11 -> "тысяча "
-        n1 % 10 in 2..4 && n1 % 100 !in 12..14 -> "тысячи "
-        else -> "тысяч "
-    }
+    if (n1 > 0)
+        res2 += hundreds(n1) +
+                (if (n1 % 100 in 11..19) lastTwoDigits(n1)
+                else secondLastDigit(n1) + lastDigitInThousands(n1)) + thousands(n1)
     return (res2 + res1).trim()
 }
 
-fun a(n: Int): String =
+fun lastDigit(n: Int): String =
         when (n % 10) {
             1 -> "один "
             2 -> "два "
@@ -375,7 +328,7 @@ fun a(n: Int): String =
             else -> ""
         }
 
-fun b(n: Int): String =
+fun lastTwoDigits(n: Int): String =
         when (n % 100) {
             11 -> "одиннадцать "
             12 -> "двенадцать "
@@ -389,7 +342,7 @@ fun b(n: Int): String =
             else -> ""
         }
 
-fun c(n: Int): String =
+fun secondLastDigit(n: Int): String =
         when (n / 10 % 10) {
             1 -> "десять "
             2 -> "двадцать "
@@ -403,7 +356,7 @@ fun c(n: Int): String =
             else -> ""
         }
 
-fun d(n: Int): String =
+fun hundreds(n: Int): String =
         when (n / 100 % 10) {
             1 -> "сто "
             2 -> "двести "
@@ -417,7 +370,7 @@ fun d(n: Int): String =
             else -> ""
         }
 
-fun e(n: Int): String =
+fun lastDigitInThousands(n: Int): String =
         when (n % 10) {
             1 -> "одна "
             2 -> "две "
@@ -431,4 +384,10 @@ fun e(n: Int): String =
             else -> ""
         }
 
+fun thousands(n: Int): String =
+        when {
+            n % 10 == 1 && n % 100 != 11 -> "тысяча "
+            n % 10 in 2..4 && n % 100 !in 12..14 -> "тысячи "
+            else -> "тысяч "
+        }
 

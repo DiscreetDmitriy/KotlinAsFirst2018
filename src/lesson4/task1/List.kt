@@ -120,7 +120,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = sqrt(v.map { sqr(it) }.sum())
+fun abs(v: List<Double>): Double = sqrt(v.sumByDouble { sqr(it) })
 
 /**
  * Простая
@@ -165,11 +165,7 @@ fun times(a: List<Double>, b: List<Double>): Double {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0.0 при любом x.
  */
-fun polynom(p: List<Double>, x: Double): Double {
-    var px = 0.0
-    for (i in 0 until p.size) px += p[i] * x.pow(i)
-    return px
-}
+fun polynom(p: List<Double>, x: Double): Double = p.mapIndexed { index, acc -> acc * x.pow(index) }.sum()
 
 /**
  * Средняя
@@ -198,13 +194,12 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    if (n <= 2) return listOf(n)
+    if (isPrime(n)) return listOf(n)
     val list = mutableListOf<Int>()
     var n1 = n
     for (i in 2..maxDivisor(n1)) while (n1 % i == 0) {
         n1 /= i
         list.add(i)
-        if (i == n) return listOf(n)
     }
     return list.sorted()
 }
@@ -228,7 +223,7 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
 fun convert(n: Int, base: Int): List<Int> {
     var n1 = n
     val list = mutableListOf<Int>()
-    while (n1 > base) {
+    while (n1 >= base) {
         list.add(n1 % base)
         n1 /= base
     }
@@ -260,6 +255,7 @@ fun convertToString(n: Int, base: Int): String {
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int {
+//    return digits.foldRightIndexed(0) { index, i, acc -> acc + i * base.toDouble().pow(index).toInt() }
     var res = 0
     val list = digits.reversed()
     for (i in 0 until digits.size) {
@@ -427,7 +423,7 @@ fun e(n: Int): String =
             2 -> "две "
             3 -> "три "
             4 -> "четыре "
-            5 -> "пят ь"
+            5 -> "пять "
             6 -> "шесть "
             7 -> "семь "
             8 -> "восемь "

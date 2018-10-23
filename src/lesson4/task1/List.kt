@@ -354,8 +354,8 @@ fun russian(n: Int): String {
     res1 += d(n1) + if (n1 % 100 in 11..19) b(n1) else c(n1) + a(n1)
     n1 /= 1000
     if (n1 > 0) res2 += d(n1) + (if (n1 % 100 in 11..19) b(n1) else c(n1) + e(n1)) + when {
-        n1 % 10 == 1 -> "тысяча "
-        n1 % 10 in 2..4 -> "тысячи "
+        n1 % 10 == 1 && n1 % 100 != 11 -> "тысяча "
+        n1 % 10 in 2..4 && n1 % 100 !in 12..14 -> "тысячи "
         else -> "тысяч "
     }
     return (res2 + res1).trim()

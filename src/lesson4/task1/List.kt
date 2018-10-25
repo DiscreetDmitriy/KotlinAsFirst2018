@@ -298,17 +298,17 @@ fun roman(n: Int): String {
  */
 fun russian(n: Int): String {
     var n1 = n
-    val res1: String
-    var res2 = ""
-    res1 = hundreds(n1) +
+    val res1 = mutableListOf<String>()
+    val res2 = mutableListOf<String>()
+    res1 += hundreds(n1) +
             if (n1 % 100 in 11..19) lastTwoDigits(n1)
             else secondLastDigit(n1) + lastDigit(n1)
     n1 /= 1000
     if (n1 > 0)
-        res2 = hundreds(n1) +
+        res2 += hundreds(n1) +
                 (if (n1 % 100 in 11..19) lastTwoDigits(n1)
                 else secondLastDigit(n1) + lastDigitInThousands(n1)) + thousands(n1)
-    return (res2 + res1).trimEnd()
+    return (res2 + res1).joinToString(separator = "").dropLast(1)
 }
 
 fun lastDigit(n: Int): String =

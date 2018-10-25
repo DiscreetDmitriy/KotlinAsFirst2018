@@ -6,7 +6,6 @@ import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import lesson3.task1.isPrime
 import lesson3.task1.maxDivisor
-import lesson3.task1.revert
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -150,11 +149,9 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
-fun times(a: List<Double>, b: List<Double>): Double {
-    val c = mutableListOf<Double>()
-    for (i in 0 until a.size) c.add(a[i] * b[i])
-    return c.sum()
-}
+fun times(a: List<Double>, b: List<Double>): Double =
+        a.mapIndexed { index, d -> d * b[index] }.sum()
+
 
 /**
  * Средняя
@@ -190,13 +187,13 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    if (isPrime(n)) return listOf(n)
     val list = mutableListOf<Int>()
     var n1 = n
     for (i in 2..maxDivisor(n1)) while (n1 % i == 0) {
         n1 /= i
         list.add(i)
     }
+    if (list.isEmpty()) return listOf(n)
     return list.sorted()
 }
 
@@ -235,9 +232,11 @@ fun convert(n: Int, base: Int): List<Int> {
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
-fun convertToString(n: Int, base: Int): String =
-        convert(n, base)
-                .joinToString(separator = "") { if (it > 9) "${it.toChar() + 87}" else "$it" }
+fun convertToString(n: Int, base: Int): String {
+    val difference = 'a'.toInt() - 10
+    return convert(n, base)
+            .joinToString(separator = "") { if (it > 9) "${it.toChar() + difference}" else "$it" }
+}
 
 /**
  * Средняя
@@ -259,15 +258,12 @@ fun decimal(digits: List<Int>, base: Int): Int =
  * Например: str = "13c", base = 14 -> 250
  */
 fun decimalFromString(str: String, base: Int): Int {
-    var res = 0
-    for ((i, char) in str.withIndex()) {
-        res += base.toDouble().pow(str.length - i - 1).toInt() * if (char.toInt() - 87 < 10) {
-            (char - 48).toInt()
-        } else {
-            (char - 87).toInt()
-        }
-    }
-    return res
+    val letterDifference = 'a'.toInt() - 10
+    val digitDifference = '1'.toInt() - 1
+    return decimal(str.map {
+        if (it.toInt() - letterDifference < 10) it.toInt() - digitDifference
+        else it.toInt() - letterDifference
+    }, base)
 }
 
 /**
@@ -279,17 +275,18 @@ fun decimalFromString(str: String, base: Int): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 fun roman(n: Int): String {
-    val romanDigits = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
-    val arabianDigits = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    val digits =
+            mapOf("M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
+                    "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1)
     var n1 = n
-    var str = ""
-    var i = 0
-    while (n1 > 0) {
-        while (arabianDigits[i] > n1) i++
-        str += romanDigits[i]
-        n1 -= arabianDigits[i]
+    val str = mutableListOf<String>()
+    for ((roman, arabian) in digits) {
+        while (n1 >= arabian) {
+            str.add(roman)
+            n1 -= arabian
+        }
     }
-    return str
+    return str.joinToString(separator = "")
 }
 
 /**
@@ -301,17 +298,17 @@ fun roman(n: Int): String {
  */
 fun russian(n: Int): String {
     var n1 = n
-    var res1 = ""
+    val res1: String
     var res2 = ""
-    res1 += hundreds(n1) +
+    res1 = hundreds(n1) +
             if (n1 % 100 in 11..19) lastTwoDigits(n1)
             else secondLastDigit(n1) + lastDigit(n1)
     n1 /= 1000
     if (n1 > 0)
-        res2 += hundreds(n1) +
+        res2 = hundreds(n1) +
                 (if (n1 % 100 in 11..19) lastTwoDigits(n1)
                 else secondLastDigit(n1) + lastDigitInThousands(n1)) + thousands(n1)
-    return (res2 + res1).trim()
+    return (res2 + res1).trimEnd()
 }
 
 fun lastDigit(n: Int): String =

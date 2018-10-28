@@ -139,7 +139,6 @@ class Tests {
                 mapOf<Int, List<String>>(),
                 buildGrades(mapOf())
         )
-        // TODO: Sort the values here or let the students do it?
         assertEquals(
                 mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат")),
                 buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
@@ -317,7 +316,7 @@ class Tests {
                 setOf("Кубок"),
                 bagPacking(
                         mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
-                        850
+                        8509
                 )
         )
         assertEquals(

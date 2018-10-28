@@ -301,7 +301,12 @@ fun hasAnagrams(words: List<String>): Boolean =
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (a in list) {
+        if ((list - a).contains(number - a)) return list.indexOf(a) to list.indexOf(number - a)
+    }
+    return -1 to -1
+}
 
 /**
  * Очень сложная
@@ -322,4 +327,15 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    var c = capacity
+    var res = setOf<String>()
+    var treasures2 = treasures.filterValues { it.first <= capacity }
+    print(treasures2)
+    var max = 0
+    for ((k, v) in treasures2) {
+        res += k
+
+    }
+    return res
+}

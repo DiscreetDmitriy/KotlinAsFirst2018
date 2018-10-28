@@ -252,7 +252,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = word.toLowerCase().all { it in chars }
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = word.all { it in chars }
 
 /**
  * Средняя
@@ -339,5 +339,5 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             c -= v.first
         }
     }
-    return res
+    return res.sortedDescending().toSet()
 }

@@ -252,7 +252,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = word.all { it in chars }
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = word.toLowerCase().all { it in chars }
 
 /**
  * Средняя
@@ -330,9 +330,11 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     var c = capacity
     var res = setOf<String>()
-    treasures.filterValues { it.first <= capacity }.toList().sortedByDescending { it.second.second }.toMap()
-    for ((k, v) in treasures) {
-        if (v.first <= c) {
+    val treasures2 =
+            treasures.filterValues { it.first <= capacity }.toList().sortedByDescending { it.second.second }.toMap()
+    println(treasures)
+    for ((k, v) in treasures2) {
+        if (v.first < c) {
             res += k
             c -= v.first
         }

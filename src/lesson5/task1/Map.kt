@@ -334,7 +334,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             treasures.filterValues { it.first <= capacity }.toList().sortedByDescending { it.second.second }.toMap()
     println(treasures)
     for ((k, v) in treasures2) {
-        if (v.first < c) {
+        if (v.first <= c) {
             res += k
             c -= v.first
         }

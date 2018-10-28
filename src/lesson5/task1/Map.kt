@@ -177,7 +177,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     var res = listOf<Pair<String, Double>>()
     for ((k, pair) in stuff) if (pair.first == kind) res += k to pair.second
     if (res.isEmpty()) return null
-    res.minBy { it.second }
+    res.sortedBy { it.second }
     return res.first().first
 }
 
@@ -330,12 +330,12 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     var c = capacity
     var res = setOf<String>()
-    var treasures2 = treasures.filterValues { it.first <= capacity }
-    print(treasures2)
-    var max = 0
-    for ((k, v) in treasures2) {
-        res += k
-
+    treasures.filterValues { it.first <= capacity }.toList().sortedByDescending { it.second.second }.toMap()
+    for ((k, v) in treasures) {
+        if (v.first <= c) {
+            res += k
+            c -= v.first
+        }
     }
     return res
 }

@@ -316,7 +316,7 @@ class Tests {
                 setOf("Кубок"),
                 bagPacking(
                         mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
-                        8509
+                        850
                 )
         )
         assertEquals(

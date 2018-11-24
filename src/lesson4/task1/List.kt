@@ -189,12 +189,14 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
 fun factorize(n: Int): List<Int> {
     val list = mutableListOf<Int>()
     var n1 = n
-    for (i in 2..maxDivisor(n1)) while (n1 % i == 0) {
-        n1 /= i
-        list.add(i)
+    for (i in 2..maxDivisor(n1)) {
+        while (n1 % i == 0) {
+            n1 /= i
+            list.add(i)
+        }
     }
     if (list.isEmpty()) return listOf(n)
-    return list.sorted()
+    return list
 }
 
 /**
@@ -300,91 +302,102 @@ fun russian(n: Int): String {
     var n1 = n
     val res1 = mutableListOf<String>()
     val res2 = mutableListOf<String>()
-    res1 += hundreds(n1) +
-            if (n1 % 100 in 11..19) lastTwoDigits(n1)
-            else secondLastDigit(n1) + lastDigit(n1)
+    res1 += hundreds(n1)
+    if (n1 % 100 in 11..19) res1 += lastTwoDigits(n1)
+    else {
+        res1 += secondLastDigit(n1)
+        res1 += lastDigit(n1)
+    }
     n1 /= 1000
-    if (n1 > 0)
-        res2 += hundreds(n1) +
-                (if (n1 % 100 in 11..19) lastTwoDigits(n1)
-                else secondLastDigit(n1) + lastDigitInThousands(n1)) + thousands(n1)
-    return (res2 + res1).joinToString(separator = "").dropLast(1)
+    if (n1 > 0) {
+        res2 += hundreds(n1)
+        if (n1 % 100 in 11..19) res2 += lastTwoDigits(n1)
+        else {
+            res2 += secondLastDigit(n1)
+            res2 += lastDigitInThousands(n1)
+        }
+    }
+    if (res2.isNotEmpty()) res2 += thousands(n1)
+    res1.removeIf { it == "" }
+    res2.removeIf { it == "" }
+    return res2.joinToString(separator = " ")
+            .plus(if (res2.isNotEmpty() && res1.isNotEmpty()) " " else "") + res1.joinToString(separator = " ")
 }
 
 fun lastDigit(n: Int): String =
         when (n % 10) {
-            1 -> "один "
-            2 -> "два "
-            3 -> "три "
-            4 -> "четыре "
-            5 -> "пять "
-            6 -> "шесть "
-            7 -> "семь "
-            8 -> "восемь "
-            9 -> "девять "
+            1 -> "один"
+            2 -> "два"
+            3 -> "три"
+            4 -> "четыре"
+            5 -> "пять"
+            6 -> "шесть"
+            7 -> "семь"
+            8 -> "восемь"
+            9 -> "девять"
             else -> ""
         }
 
 fun lastTwoDigits(n: Int): String =
         when (n % 100) {
-            11 -> "одиннадцать "
-            12 -> "двенадцать "
-            13 -> "тринадцать "
-            14 -> "четырнадцать "
-            15 -> "пятнадцать "
-            16 -> "шестнадцать "
-            17 -> "семнадцать "
-            18 -> "восемнадцать "
-            19 -> "девятнадцать "
+            11 -> "одиннадцать"
+            12 -> "двенадцать"
+            13 -> "тринадцать"
+            14 -> "четырнадцать"
+            15 -> "пятнадцать"
+            16 -> "шестнадцать"
+            17 -> "семнадцать"
+            18 -> "восемнадцать"
+            19 -> "девятнадцать"
             else -> ""
         }
 
 fun secondLastDigit(n: Int): String =
         when (n / 10 % 10) {
-            1 -> "десять "
-            2 -> "двадцать "
-            3 -> "тридцать "
-            4 -> "сорок "
-            5 -> "пятьдесят "
-            6 -> "шестьдесят "
-            7 -> "семьдесят "
-            8 -> "восемьдесят "
-            9 -> "девяносто "
+            1 -> "десять"
+            2 -> "двадцать"
+            3 -> "тридцать"
+            4 -> "сорок"
+            5 -> "пятьдесят"
+            6 -> "шестьдесят"
+            7 -> "семьдесят"
+            8 -> "восемьдесят"
+            9 -> "девяносто"
             else -> ""
         }
 
 fun hundreds(n: Int): String =
         when (n / 100 % 10) {
-            1 -> "сто "
-            2 -> "двести "
-            3 -> "триста "
-            4 -> "четыреста "
-            5 -> "пятьсот "
-            6 -> "шестьсот "
-            7 -> "семьсот "
-            8 -> "восемьсот "
-            9 -> "девятьсот "
+            1 -> "сто"
+            2 -> "двести"
+            3 -> "триста"
+            4 -> "четыреста"
+            5 -> "пятьсот"
+            6 -> "шестьсот"
+            7 -> "семьсот"
+            8 -> "восемьсот"
+            9 -> "девятьсот"
             else -> ""
         }
 
 fun lastDigitInThousands(n: Int): String =
         when (n % 10) {
-            1 -> "одна "
-            2 -> "две "
-            3 -> "три "
-            4 -> "четыре "
-            5 -> "пять "
-            6 -> "шесть "
-            7 -> "семь "
+            1 -> "одна"
+            2 -> "две"
+            3 -> "три"
+            4 -> "четыре"
+            5 -> "пять"
+            6 -> "шесть"
+            7 -> "семь"
             8 -> "восемь "
-            9 -> "девять "
+            9 -> "девять"
             else -> ""
         }
 
 fun thousands(n: Int): String =
         when {
-            n % 10 == 1 && n % 100 != 11 -> "тысяча "
-            n % 10 in 2..4 && n % 100 !in 12..14 -> "тысячи "
-            else -> "тысяч "
+            n % 10 == 1 && n % 100 != 11 -> "тысяча"
+            n % 10 in 2..4 && n % 100 !in 12..14 -> "тысячи"
+            else -> "тысяч"
         }
 

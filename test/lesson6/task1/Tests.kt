@@ -72,23 +72,22 @@ class Tests {
         assertEquals(-1, bestLongJump("% - - % -"))
         assertEquals(754, bestLongJump("700 717 707 % 754"))
         assertEquals(-1, bestLongJump("700 + 700"))
-
     }
 
     @Test
     @Tag("Hard")
     fun bestHighJump() {
+        assertEquals(230, bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
         assertEquals(226, bestHighJump("226 +"))
         assertEquals(-1, bestHighJump("???"))
-        assertEquals(230, bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
     }
 
     @Test
     @Tag("Hard")
     fun plusMinus() {
+        assertEquals(6, plusMinus("2 + 31 - 40 + 13"))
         assertEquals(0, plusMinus("0"))
         assertEquals(4, plusMinus("2 + 2"))
-        assertEquals(6, plusMinus("2 + 31 - 40 + 13"))
         assertEquals(-1, plusMinus("0 - 1"))
         assertThrows(IllegalArgumentException::class.java) { plusMinus("+2") }
         assertThrows(IllegalArgumentException::class.java) { plusMinus("+ 4") }
@@ -100,9 +99,9 @@ class Tests {
     @Test
     @Tag("Hard")
     fun firstDuplicateIndex() {
+        assertEquals(40, firstDuplicateIndex("Яблоко упало на ветку с ветки оно упало на на землю"))
         assertEquals(-1, firstDuplicateIndex("Привет"))
         assertEquals(9, firstDuplicateIndex("Он пошёл в в школу"))
-        assertEquals(40, firstDuplicateIndex("Яблоко упало на ветку с ветки оно упало на на землю"))
         assertEquals(9, firstDuplicateIndex("Мы пошли прямо Прямо располагался магазин"))
     }
 

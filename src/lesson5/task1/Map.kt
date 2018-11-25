@@ -340,7 +340,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     var c = capacity
     val treasures2 =
             treasures.filterValues { it.first <= capacity }.toList()
-                    .sortedBy { it.second.second / it.second.first }.toMap()
+                    .sortedByDescending { it.second.second.toDouble() / it.second.first }.toMap()
 
     for ((k, v) in treasures2) {
         if (v.first <= c) {

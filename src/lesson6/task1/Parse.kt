@@ -89,7 +89,7 @@ fun dateStrToDigit(str: String): String {
         if (monthString in months) monthInt = months.indexOf(monthString) + 1
         else throw Exception()
 
-        if (day > daysInMonth(monthInt, year)) throw Exception()
+        if (day !in 1..daysInMonth(monthInt, year)) throw Exception()
 
         String.format("%02d.%02d.%d", day, monthInt, year)
 
@@ -121,7 +121,7 @@ fun dateDigitToStr(digital: String): String {
         val month = monthStr.toInt()
         val year = yearStr.toInt()
 
-        if (day > daysInMonth(month, year) || month !in 1..12) throw Exception()
+        if (day !in 1..daysInMonth(month, year) || month !in 1..12) throw Exception()
 
         String.format("%d %s %d", day, months[month - 1], year)
 
@@ -143,7 +143,7 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String =
-        if (Regex("""(\+([-\s]*\d)+[-\s]*)?(\(([-\s]*\d)+[-\s]*\))?([-\s]*\d)+""").matches(phone))
+        if (!Regex("""[^+0-9()\s-]""").containsMatchIn(phone))
             Regex("""[-\s()]""").replace(phone, "")
         else ""
 

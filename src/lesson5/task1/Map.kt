@@ -175,7 +175,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? =
-        stuff.filter { it.value.first == kind }.minBy { it.value.second }?.component1()
+        stuff.filter { it.value.first == kind }.minBy { it.value.second }?.key
 
 /**
  * Сложная
@@ -309,10 +309,13 @@ fun hasAnagrams(words: List<String>): Boolean =
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (a in list) {
-        if ((list - a).contains(number - a))
-            return list.indexOf(a) to list.indexOf(number - a)
+    val map = mutableMapOf<Int, Int>()
+
+    for ((index, num) in list.withIndex()) {
+        if (map.containsKey(number - num)) return map[number - num]!! to index
+        else map[num] = index
     }
+
     return -1 to -1
 }
 
@@ -337,16 +340,41 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val res = mutableSetOf<String>()
-    var c = capacity
-    val treasures2 =
-            treasures.filterValues { it.first <= capacity }.toList()
-                    .sortedByDescending { it.second.second.toDouble() / it.second.first }.toMap()
+    val names = treasures.keys.toList()
+    val weights = treasures.values.map { it.first }
+    val prices = treasures.values.map { it.second }
+    val size = treasures.size
+    var bestWeight = 0
 
-    for ((k, v) in treasures2) {
-        if (v.first <= c) {
-            res += k
-            c -= v.first
+    val p = mutableListOf(IntArray(capacity + 1) { 0 })
+    val t = mutableListOf(BooleanArray(capacity + 1) { false })
+
+    for (n in 0 until size) {
+        p.add(IntArray(capacity + 1) { 0 })
+        t.add(BooleanArray(capacity + 1) { false })
+
+        for (w in 0..capacity) {
+            if (p[n + 1][w] <= p[n][w]) {
+                p[n + 1][w] = p[n][w]
+                t[n + 1][w] = false
+            }
+            if (weights[n] <= w)
+                if (p[n + 1][w] < p[n][w - weights[n]] + prices[n]) {
+                    p[n + 1][w] = p[n][w - weights[n]] + prices[n]
+                    t[n + 1][w] = true
+                }
         }
     }
-    return res.toList().sortedDescending().toSet()
+
+    for (w in 0..capacity)
+        if (p[size][bestWeight] < p[size][w])
+            bestWeight = w
+
+    for (i in size downTo 0)
+        if (t[i][bestWeight]) {
+            res.add(names[i - 1])
+            bestWeight -= weights[i - 1]
+        }
+
+    return res
 }

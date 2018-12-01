@@ -315,4 +315,20 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val con = Array(cells) { 0 }
+    var position = cells / 2
+    var readCommands = 0
+
+    var test = 0
+    commands.forEach {
+        when (it) {
+            '[' -> test++
+            ']' -> test--
+        }
+        if (test > 0) throw IllegalArgumentException()
+    }
+    if (test < 0) throw IllegalArgumentException()
+
+    return con.toList()
+}

@@ -2,8 +2,6 @@
 
 package lesson5.task1
 
-import kotlinx.html.I
-
 /**
  * Пример
  *
@@ -339,19 +337,19 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val res = mutableSetOf<String>()
     val weights = treasures.values.map { it.first }
     val prices = treasures.values.map { it.second }
     val names = treasures.keys.toList()
     val size = treasures.size
-    val res = mutableSetOf<String>()
     var bestWeight = 0
 
-    val p = mutableListOf(IntArray(capacity + 1) { 0 })
-    val t = mutableListOf(BooleanArray(capacity + 1) { false })
+    val p = mutableListOf(MutableList(capacity + 1) { 0 })
+    val t = mutableListOf(MutableList(capacity + 1) { false })
 
     for (n in 0 until size) {
-        p.add(IntArray(capacity + 1) { 0 })
-        t.add(BooleanArray(capacity + 1) { false })
+        p.add(MutableList(capacity + 1) { 0 })
+        t.add(MutableList(capacity + 1) { false })
 
         for (w in 0..capacity) {
             if (p[n + 1][w] <= p[n][w]) {

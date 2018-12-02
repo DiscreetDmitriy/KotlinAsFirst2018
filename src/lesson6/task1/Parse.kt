@@ -2,13 +2,7 @@
 
 package lesson6.task1
 
-import kotlinx.html.I
 import lesson2.task2.daysInMonth
-import java.lang.IllegalArgumentException
-import java.lang.IndexOutOfBoundsException
-import java.lang.NumberFormatException
-import kotlin.Exception
-import kotlin.math.exp
 
 /**
  * Пример
@@ -316,9 +310,10 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
-    val con = Array(cells) { 0 }
+    val con = MutableList(cells) { 0 }
     var position = cells / 2
     var readCommands = 0
+    var caret = 0
 
     var test = 0
     commands.forEach {
@@ -326,9 +321,48 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             '[' -> test++
             ']' -> test--
         }
-        if (test > 0) throw IllegalArgumentException()
+        if (test < 0) throw IllegalArgumentException()
     }
-    if (test < 0) throw IllegalArgumentException()
+    if (test > 0) throw IllegalArgumentException()
 
-    return con.toList()
+
+    while (caret < commands.length && readCommands < limit) {
+        when (commands[caret]) {
+            ' ' -> {
+            }
+            '>' -> position++
+            '<' -> position--
+            '+' -> con[position]++
+            '-' -> con[position]--
+            '[' -> {
+                if (con[position] == 0) {
+                    var stack = 1
+
+                    while (stack > 0) {
+                        caret++
+                        if (commands[caret] == '[') stack++
+                        else if (commands[caret] == ']') stack--
+                    }
+                }
+            }
+            ']' -> {
+                if (con[position] != 0) {
+                    var stack = 1
+                    while (stack > 0) {
+                        caret--
+                        if (commands[caret] == ']') stack++
+                        else if (commands[caret] == '[') stack--
+                    }
+                }
+            }
+            else -> throw IllegalArgumentException()
+        }
+
+        readCommands++
+        caret++
+
+        if (position !in 0 until cells) throw IllegalStateException()
+    }
+
+    return con
 }

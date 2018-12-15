@@ -115,7 +115,6 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val map = mutableMapOf<Int, List<String>>()
     grades.forEach { (name, grade) ->
-        //        if (!map.containsKey(grade)) map[grade] = mutableListOf(name) else map[grade] = map[grade]!! + name
         map[grade] = map.getOrPut(grade) { mutableListOf() } + name
     }
     for ((k, v) in map) map[k] = v.sortedDescending()
@@ -203,9 +202,9 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     val res = mutableMapOf<String, Set<String>>()
     friends.forEach { (key, value) ->
         if (!res.contains(key))
-            res[key] = getNamesOf(key, friends).toSortedSet()
+            res[key] = getNamesOf(key, friends)
         value.forEach {
-            if (it !in res) res[it] = getNamesOf(it, friends).toSortedSet()
+            if (it !in res) res[it] = getNamesOf(it, friends)
         }
     }
     return res
@@ -220,7 +219,7 @@ fun getNamesOf(key: String, friends: Map<String, Set<String>>): Set<String> {
         friends[name]?.forEach { if (it !in names) allNames.add(it) }
         allNames.remove(name)
     }
-    return names - key
+    return (names - key).toSortedSet()
 }
 
 /**

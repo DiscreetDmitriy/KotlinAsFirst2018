@@ -73,7 +73,7 @@ fun main(args: Array<String>) {
  */
 fun dateStrToDigit(str: String): String {
     return try {
-        if (!Regex("""^\d{1,2} \S+ \d+$""").matches(str)) throw Exception()
+        if (!Regex("""^\d{1,2} [а-яА-яёЁa-zA-Z]+ \d+$""").matches(str)) throw Exception()
 
         val (dayStr, monthString, yearStr) = str.split(" ")
         val day = dayStr.toInt()
@@ -92,9 +92,8 @@ fun dateStrToDigit(str: String): String {
     }
 }
 
-val months =
-        listOf("января", "февраля", "марта", "апреля", "мая", "июня",
-                "июля", "августа", "сентября", "октября", "ноября", "декабря")
+val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
+        "июля", "августа", "сентября", "октября", "ноября", "декабря")
 
 /**
  * Средняя
@@ -191,14 +190,13 @@ fun bestHighJump(jumps: String): Int =
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int {
-    return if (Regex("""\d+( [+-] \d+)*""").matches(expression))
-        expression.replace(" ", "")
-                .split(Regex("""(?=[-+])"""))
-                .map { it.toInt() }
-                .sum()
-    else throw IllegalArgumentException()
-}
+fun plusMinus(expression: String): Int =
+        if (Regex("""\d+( [+-] \d+)*""").matches(expression))
+            expression.replace(" ", "")
+                    .split(Regex("""(?=[-+])"""))
+                    .map { it.toInt() }
+                    .sum()
+        else throw IllegalArgumentException()
 
 /**
  * Сложная
@@ -210,11 +208,10 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    val reg = Regex("""(\S+) \1""")
-    val s = str.toLowerCase()
+    val reg = ("""(\S+) \1""").toRegex(RegexOption.IGNORE_CASE)
 
-    return if (reg.containsMatchIn(s))
-        s.indexOf(reg.find(s)!!.value)
+    return if (reg.containsMatchIn(str))
+        str.indexOf(reg.find(str)!!.value)
     else -1
 }
 
@@ -262,8 +259,9 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    val signToNumber = mapOf("M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100,
-            "XC" to 90, "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1)
+    val signToNumber = mapOf("I" to 1, "IV" to 4, "V" to 5, "IX" to 9, "X" to 10, "XL" to 40,
+            "L" to 50, "XC" to 90, "C" to 100, "CD" to 400, "D" to 500, "CM" to 900, "M" to 1000)
+
     if (Regex("[^IVXLCDM]").containsMatchIn(roman) || roman == "") return -1
 
     return Regex("CM|CD|XC|XL|IX|IV|M|D|C|L|X|V|I")
@@ -312,8 +310,8 @@ fun fromRoman(roman: String): Int {
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     val con = MutableList(cells) { 0 }
     var position = cells / 2
-    var readCommands = 0
     var caret = 0
+    var cmd = 0
 
     var test = 0
     commands.forEach {
@@ -323,10 +321,10 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         }
         if (test < 0) throw IllegalArgumentException()
     }
-    if (test > 0) throw IllegalArgumentException()
+    if (test != 0) throw IllegalArgumentException()
 
 
-    while (caret < commands.length && readCommands < limit) {
+    while (caret < commands.length && cmd < limit) {
         when (commands[caret]) {
             ' ' -> {
             }
@@ -336,29 +334,28 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             '-' -> con[position]--
             '[' -> {
                 if (con[position] == 0) {
-                    var stack = 1
-
-                    while (stack > 0) {
+                    var sqrBrackets = 1
+                    while (sqrBrackets > 0) {
                         caret++
-                        if (commands[caret] == '[') stack++
-                        else if (commands[caret] == ']') stack--
+                        if (commands[caret] == '[') sqrBrackets++
+                        else if (commands[caret] == ']') sqrBrackets--
                     }
                 }
             }
             ']' -> {
                 if (con[position] != 0) {
-                    var stack = 1
-                    while (stack > 0) {
+                    var sqrBrackets = 1
+                    while (sqrBrackets > 0) {
                         caret--
-                        if (commands[caret] == ']') stack++
-                        else if (commands[caret] == '[') stack--
+                        if (commands[caret] == ']') sqrBrackets++
+                        else if (commands[caret] == '[') sqrBrackets--
                     }
                 }
             }
             else -> throw IllegalArgumentException()
         }
 
-        readCommands++
+        cmd++
         caret++
 
         if (position !in 0 until cells) throw IllegalStateException()

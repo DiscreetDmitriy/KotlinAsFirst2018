@@ -170,11 +170,7 @@ fun bestLongJump(jumps: String): Int {
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int =
-        jumps.split(Regex("""(?<=[+%-])\s"""))
-                .filter { "+" in it }
-                .map { it.split("\\s+".toRegex())[0].toInt() }
-                .max() ?: -1
+fun bestHighJump(jumps: String): Int = TODO()
 
 
 /**
@@ -186,13 +182,7 @@ fun bestHighJump(jumps: String): Int =
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int =
-        if (Regex("""^\d+( [+-] \d+)*$""").matches(expression))
-            expression.replace(" ", "")
-                    .split(Regex("""(?=[-+])"""))
-                    .map { it.toInt() }
-                    .sum()
-        else throw IllegalArgumentException()
+fun plusMinus(expression: String): Int = TODO()
 
 /**
  * Сложная
@@ -223,24 +213,7 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    var price = -1.0
-    var name = ""
-
-    return try {
-        description
-                .split("; ")
-                .map { it.split(" ") }
-                .forEach {
-                    if (it[1].toDouble() > price) {
-                        price = it[1].toDouble()
-                        name = it[0]
-                    }
-                }
-        name
-
-    } catch (e: IndexOutOfBoundsException) {
-        ""
-    }
+    TODO()
 }
 
 /**
@@ -255,15 +228,7 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    val signToNumber = mapOf("I" to 1, "IV" to 4, "V" to 5, "IX" to 9, "X" to 10, "XL" to 40,
-            "L" to 50, "XC" to 90, "C" to 100, "CD" to 400, "D" to 500, "CM" to 900, "M" to 1000)
-
-    if (Regex("[^IVXLCDM]").containsMatchIn(roman) || roman == "") return -1
-
-    return Regex("CM|CD|XC|XL|IX|IV|M|D|C|L|X|V|I")
-            .findAll(roman)
-            .map { signToNumber[it.value] }
-            .sumBy { it ?: 0 }
+    TODO()
 }
 
 
@@ -310,8 +275,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var cmd = 0
 
     var test = 0
-    commands.forEach {
-        when (it) {
+    for (char in commands) {
+        when (char) {
             '[' -> test++
             ']' -> test--
         }

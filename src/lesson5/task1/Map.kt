@@ -356,12 +356,17 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     }
     var size = treasures.size
     var w = capacity
+
     while (w > 0 && size > 0) {
-        if (weights[size] <= w && table[size][w] <= table[size][w - weights[size]] + prices[size]) {
-            w -= weights[size]
-            res.add(names[size])
+        val msize = size - 1
+
+        if (weights[msize] <= w && table[msize][w] <= table[msize][w - (weights[msize])] + prices[msize]) {
+            w -= weights[msize]
+            res.add(names[msize])
         }
+
         size--
     }
+
     return res
 }

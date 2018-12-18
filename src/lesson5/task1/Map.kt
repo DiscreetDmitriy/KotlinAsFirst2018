@@ -353,17 +353,15 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             else table[i + 1].add(max(table[i][j], table[i][j - weights[i]] + prices[i]))
         }
 
-        var size = treasures.size
-        var weightCheck = 0
-
-        while (weightCheck < capacity && size != 0) {
-            if (weights[i] <= weightCheck && (table[i][weightCheck] <= (table[i][weightCheck - weights[i]] + prices[i]))) {
-                weightCheck += weights[i]
-                res.add(names[i])
-            }
-            size--
+    }
+    var size = treasures.size
+    var w = capacity
+    while (w > 0 && size > 0) {
+        if (weights[size] <= w && table[size][w] <= table[size][w - weights[size]] + prices[size]) {
+            w -= weights[size]
+            res.add(names[size])
         }
-
+        size--
     }
     return res
 }

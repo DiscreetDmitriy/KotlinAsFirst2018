@@ -57,12 +57,12 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     val res = mutableMapOf<String, Int>()
     val text = File(inputName).readText()
 
-    for (word in substrings) {
+    for (word in substrings)
         res[word] = word
                 .toRegex(RegexOption.IGNORE_CASE)
                 .findAll(text)
                 .toList().size
-    }
+
     return res
 }
 
@@ -81,7 +81,12 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val text = File(inputName).readText()
+    val map = mutableMapOf("ы" to "и", "Ы" to "И", "я" to "а",
+            "Я" to "А", "ю" to "у", "Ю" to "У")
+
+    File(outputName).writeText(
+            text.replace(Regex("""(?<=[жчшщЖЧШЩ])[ыяюЫЯЮ]""")) { map[it.value].toString() })
 }
 
 /**
@@ -102,7 +107,17 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val lines = File(inputName).readLines().map { it.trim() }
+    val maxLength = lines.map { it.length }.max() ?: 0
+
+    File(outputName).bufferedWriter().use {
+        for (line in lines) {
+            val centeredLine = " ".repeat((maxLength - line.length) / 2) + line
+            it.write(centeredLine)
+            it.newLine()
+        }
+        it.close()
+    }
 }
 
 /**
@@ -132,7 +147,15 @@ fun centerFile(inputName: String, outputName: String) {
  * 7) В самой длинной строке каждая пара соседних слов должна быть отделена В ТОЧНОСТИ одним пробелом
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
-fun alignFileByWidth(inputName: String, outputName: String) {
+fun alignFileByWidth(inputName: String, outputName: String) /*{
+    val lines = File(inputName).readLines()
+            .map { it.trim().replace(Regex("\\s+"), " ") }
+    val maxLength = lines.map { it.length }.max() ?: 0
+    File(outputName).bufferedWriter().use {
+        val str = it.toString()
+        val words = str.split(" ")
+    }
+}*/ {
     TODO()
 }
 

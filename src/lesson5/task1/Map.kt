@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import java.lang.Integer.max
+
 /**
  * Пример
  *
@@ -200,10 +202,10 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val res = mutableMapOf<String, Set<String>>()
-    friends.forEach { (key, value) ->
+    for ((key, value) in friends) {
         if (!res.contains(key))
             res[key] = getNamesOf(key, friends)
-        value.forEach {
+        for (it in value) {
             if (it !in res) res[it] = getNamesOf(it, friends)
         }
     }
@@ -341,37 +343,23 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val prices = treasures.values.map { it.second }
     val names = treasures.keys.toList()
     val size = treasures.size
-    var bestWeight = 0
 
-    val p = mutableListOf(MutableList(capacity + 1) { 0 })
-    val t = mutableListOf(MutableList(capacity + 1) { false })
+    val table = mutableListOf(MutableList(capacity + 1) { 0 })
 
-    for (n in 0 until size) {
-        p.add(MutableList(capacity + 1) { 0 })
-        t.add(MutableList(capacity + 1) { false })
-
-        for (w in 0..capacity) {
-            if (p[n + 1][w] <= p[n][w]) {
-                p[n + 1][w] = p[n][w]
-                t[n + 1][w] = false
+    for (i in 0 until size) {
+        table.add(MutableList(capacity + 1) { 0 })
+        for (j in 0..capacity) {
+            if ((weights[i] > j)) table[i + 1].add(table[i][j])
+            else table[i + 1].add(max(table[i][j], table[i][j - weights[i]] + prices[i]))
+        }
+        var weightCheck = 0
+        while (size != 0 && weightCheck <= capacity) {
+            if (weights[i] <= weightCheck && (table[i][weightCheck] <= (table[i][weightCheck - weights[i]] + prices[i]))) {
+                res.add(names[i])
+                weightCheck += weights[i]
             }
-            if (weights[n] <= w)
-                if (p[n + 1][w] < p[n][w - weights[n]] + prices[n]) {
-                    p[n + 1][w] = p[n][w - weights[n]] + prices[n]
-                    t[n + 1][w] = true
-                }
+            weightCheck++
         }
     }
-
-    for (w in 0..capacity)
-        if (p[size][bestWeight] < p[size][w])
-            bestWeight = w
-
-    for (i in size downTo 0)
-        if (t[i][bestWeight]) {
-            res.add(names[i - 1])
-            bestWeight -= weights[i - 1]
-        }
-
     return res
 }

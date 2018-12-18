@@ -332,24 +332,20 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             '<' -> position--
             '+' -> con[position]++
             '-' -> con[position]--
-            '[' -> {
-                if (con[position] == 0) {
-                    var sqrBrackets = 1
-                    while (sqrBrackets > 0) {
-                        caret++
-                        if (commands[caret] == '[') sqrBrackets++
-                        else if (commands[caret] == ']') sqrBrackets--
-                    }
+            '[' -> if (con[position] == 0) {
+                var sqrBrackets = 1
+                while (sqrBrackets > 0) {
+                    caret++
+                    if (commands[caret] == '[') sqrBrackets++
+                    else if (commands[caret] == ']') sqrBrackets--
                 }
             }
-            ']' -> {
-                if (con[position] != 0) {
-                    var sqrBrackets = 1
-                    while (sqrBrackets > 0) {
-                        caret--
-                        if (commands[caret] == ']') sqrBrackets++
-                        else if (commands[caret] == '[') sqrBrackets--
-                    }
+            ']' -> if (con[position] != 0) {
+                var sqrBrackets = 1
+                while (sqrBrackets > 0) {
+                    caret--
+                    if (commands[caret] == ']') sqrBrackets++
+                    else if (commands[caret] == '[') sqrBrackets--
                 }
             }
             else -> throw IllegalArgumentException()

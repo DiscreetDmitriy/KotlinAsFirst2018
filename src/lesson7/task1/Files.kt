@@ -147,16 +147,34 @@ fun centerFile(inputName: String, outputName: String) {
  * 7) В самой длинной строке каждая пара соседних слов должна быть отделена В ТОЧНОСТИ одним пробелом
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
-fun alignFileByWidth(inputName: String, outputName: String) /*{
+fun alignFileByWidth(inputName: String, outputName: String) {
     val lines = File(inputName).readLines()
             .map { it.trim().replace(Regex("\\s+"), " ") }
+    val writer = File(outputName).bufferedWriter()
     val maxLength = lines.map { it.length }.max() ?: 0
-    File(outputName).bufferedWriter().use {
-        val str = it.toString()
-        val words = str.split(" ")
+
+    for (line in lines) {
+        if (line.split(" ").size >= 2 && line.length != maxLength) {
+
+            val freeSpace = maxLength - line.length
+            val spaces = line.split(" ").size - 1
+            var modSpaces = freeSpace % spaces
+            val addedSpace = " ".repeat((freeSpace / spaces) + 1)
+
+            for (i in 0 until line.length) {
+                val str = if (line[i] != ' ') line[i].toString() else {
+                    addedSpace + if (modSpaces != 0) {
+                        modSpaces--
+                        " "
+                    } else ""
+                }
+                writer.write(str)
+            }
+
+        } else writer.write(line)
+        writer.newLine()
     }
-}*/ {
-    TODO()
+    writer.close()
 }
 
 /**

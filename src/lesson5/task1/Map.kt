@@ -339,18 +339,19 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val res = mutableSetOf<String>()
-    val weights = treasures.values.map { it.first }
-    val prices = treasures.values.map { it.second }
+//    val weights = treasures.values.map { it.first }
+//    val prices = treasures.values.map { it.second }
     val names = treasures.keys.toList()
 
     val table = mutableListOf(MutableList(capacity + 1) { 0 })
 
-    for (i in 0 until treasures.size) {
+    for (size in 1 until treasures.size) {
         table.add(MutableList(capacity + 1) { 0 })
+        val a = treasures[names[size]]!!
 
-        for (j in 0..capacity) {
-            if ((weights[i] > j)) table[i + 1].add(table[i][j])
-            else table[i + 1].add(max(table[i][j], table[i][j - weights[i]] + prices[i]))
+        for (w in 0..capacity) {
+            if ((a.first > w)) table[size].add(table[size - 1][w])
+            else table[size].add(max(table[size - 1][w], table[size - 1][w - a.first] + a.second))
         }
 
     }
@@ -358,11 +359,12 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     var w = capacity
 
     while (w > 0 && size > 0) {
-        val msize = size - 1
+//        val msize = size - 1
+        val a = treasures[names[size - 1]]!!
 
-        if (weights[msize] <= w && table[msize][w] <= table[msize][w - (weights[msize])] + prices[msize]) {
-            w -= weights[msize]
-            res.add(names[msize])
+        if (a.first <= w && table[size - 1][w] <= table[size - 1][w - (a.first)] + a.second) {
+            w -= a.first
+            res.add(names[size - 1])
         }
 
         size--

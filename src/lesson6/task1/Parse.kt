@@ -269,9 +269,9 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
-    val con = MutableList(cells) { 0 }
+    val cell = MutableList(cells) { 0 }
     var position = cells / 2
-    var caret = 0
+    var pointer = 0
     var cmd = 0
 
     var test = 0
@@ -285,38 +285,38 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     if (test != 0) throw IllegalArgumentException()
 
 
-    while (caret < commands.length && cmd < limit) {
-        when (commands[caret]) {
-            ' ' -> {
-            }
+    while (pointer < commands.length && cmd < limit) {
+        when (commands[pointer]) {
             '>' -> position++
             '<' -> position--
-            '+' -> con[position]++
-            '-' -> con[position]--
-            '[' -> if (con[position] == 0) {
+            '+' -> cell[position]++
+            '-' -> cell[position]--
+            '[' -> if (cell[position] == 0) {
                 var sqrBrackets = 1
                 while (sqrBrackets > 0) {
-                    caret++
-                    if (commands[caret] == '[') sqrBrackets++
-                    else if (commands[caret] == ']') sqrBrackets--
+                    pointer++
+                    if (commands[pointer] == '[') sqrBrackets++
+                    else if (commands[pointer] == ']') sqrBrackets--
                 }
             }
-            ']' -> if (con[position] != 0) {
+            ']' -> if (cell[position] != 0) {
                 var sqrBrackets = 1
                 while (sqrBrackets > 0) {
-                    caret--
-                    if (commands[caret] == ']') sqrBrackets++
-                    else if (commands[caret] == '[') sqrBrackets--
+                    pointer--
+                    if (commands[pointer] == ']') sqrBrackets++
+                    else if (commands[pointer] == '[') sqrBrackets--
                 }
+            }
+            ' ' -> {
             }
             else -> throw IllegalArgumentException()
         }
 
         cmd++
-        caret++
+        pointer++
 
         if (position !in 0 until cells) throw IllegalStateException()
     }
 
-    return con
+    return cell
 }

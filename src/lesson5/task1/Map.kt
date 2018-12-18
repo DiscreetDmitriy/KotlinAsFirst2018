@@ -342,24 +342,28 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val weights = treasures.values.map { it.first }
     val prices = treasures.values.map { it.second }
     val names = treasures.keys.toList()
-    val size = treasures.size
 
     val table = mutableListOf(MutableList(capacity + 1) { 0 })
 
-    for (i in 0 until size) {
+    for (i in 0 until treasures.size) {
         table.add(MutableList(capacity + 1) { 0 })
+
         for (j in 0..capacity) {
             if ((weights[i] > j)) table[i + 1].add(table[i][j])
             else table[i + 1].add(max(table[i][j], table[i][j - weights[i]] + prices[i]))
         }
+
+        var size = treasures.size
         var weightCheck = 0
-        while (size != 0 && weightCheck <= capacity) {
+
+        while (weightCheck < capacity && size != 0) {
             if (weights[i] <= weightCheck && (table[i][weightCheck] <= (table[i][weightCheck - weights[i]] + prices[i]))) {
-                res.add(names[i])
                 weightCheck += weights[i]
+                res.add(names[i])
             }
-            weightCheck++
+            size--
         }
+
     }
     return res
 }

@@ -151,17 +151,13 @@ fun flattenPhoneNumber(phone: String): String =
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    val successfulJumps = jumps.replace(Regex("[-%]"), "")
+    if (Regex("""[^-%\s0-9]""").containsMatchIn(jumps)) return -1
 
-    if (Regex("""[^\s0-9]""").containsMatchIn(successfulJumps)) return -1
-
-    return successfulJumps.split("\\s".toRegex()).map {
-        try {
-            it.toInt()
-        } catch (e: NumberFormatException) {
-            -1
-        }
-    }.max() ?: -1
+    return jumps
+            .split("\\s".toRegex())
+            .filter { it.matches("\\d+".toRegex()) }
+            .map { it.toInt() }
+            .max() ?: -1
 }
 
 /**
@@ -175,9 +171,9 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int =
-        jumps.split(Regex("""(?<=[-%+])\s"""))
+        jumps.split(Regex("""(?<=[+%-])\s"""))
                 .filter { "+" in it }
-                .map { it.split(" ")[0].toInt() }
+                .map { it.split("\\s+".toRegex())[0].toInt() }
                 .max() ?: -1
 
 
@@ -193,7 +189,7 @@ fun bestHighJump(jumps: String): Int =
 fun plusMinus(expression: String): Int =
         if (Regex("""\d+( [+-] \d+)*""").matches(expression))
             expression.replace(" ", "")
-                    .split(Regex("""(?=[-+])"""))
+                    .split(Regex("""([-+])"""))
                     .map { it.toInt() }
                     .sum()
         else throw IllegalArgumentException()
@@ -208,7 +204,7 @@ fun plusMinus(expression: String): Int =
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    val reg = ("""(\S+) \1""").toRegex(RegexOption.IGNORE_CASE)
+    val reg = Regex("""(\S+) \1""", RegexOption.IGNORE_CASE)
 
     return if (reg.containsMatchIn(str))
         str.indexOf(reg.find(str)!!.value)

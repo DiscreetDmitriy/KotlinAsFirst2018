@@ -150,31 +150,31 @@ fun centerFile(inputName: String, outputName: String) {
 fun alignFileByWidth(inputName: String, outputName: String) {
     val lines = File(inputName).readLines()
             .map { it.trim().replace(Regex("\\s+"), " ") }
-    val writer = File(outputName).bufferedWriter()
     val maxLength = lines.map { it.length }.max() ?: 0
 
-    for (line in lines) {
-        if (line.split(" ").size >= 2 && line.length != maxLength) {
+    File(outputName).bufferedWriter().use {
+        for (line in lines) {
+            if (line.length != maxLength && line.split(" ").size >= 2) {
 
-            val freeSpace = maxLength - line.length
-            val spaces = line.split(" ").size - 1
-            var modSpaces = freeSpace % spaces
-            val addedSpace = " ".repeat((freeSpace / spaces) + 1)
+                val spaces = line.split(" ").size - 1
+                val freeSpace = maxLength - line.length
+                var modSpaces = freeSpace % spaces
+                val addedSpace = " ".repeat((freeSpace / spaces) + 1)
 
-            for (i in 0 until line.length) {
-                val str = if (line[i] != ' ') line[i].toString() else {
-                    addedSpace + if (modSpaces != 0) {
+                for (i in 0 until line.length) {
+                    val str = if (line[i] == ' ') addedSpace + if (modSpaces != 0) {
                         modSpaces--
                         " "
                     } else ""
+                    else line[i].toString()
+                    it.write(str)
                 }
-                writer.write(str)
-            }
 
-        } else writer.write(line)
-        writer.newLine()
+            } else it.write(line)
+            it.newLine()
+        }
+        it.close()
     }
-    writer.close()
 }
 
 /**

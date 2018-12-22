@@ -170,8 +170,12 @@ fun bestLongJump(jumps: String): Int {
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
-
+fun bestHighJump(jumps: String): Int = jumps
+        .split(Regex("""(?<=[+%-])\s"""))
+        .map { it.split(" ") }
+        .filter { '+' in it[1] }
+        .map { it[0].toInt() }
+        .max() ?: -1
 
 /**
  * Сложная
@@ -228,7 +232,18 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    TODO()
+    val signToNumber = mapOf("I" to 1, "IV" to 4, "V" to 5, "IX" to 9, "X" to 10, "XL" to 40,
+            "L" to 50, "XC" to 90, "C" to 100, "CD" to 400, "D" to 500, "CM" to 900, "M" to 1000)
+
+    if (Regex("[^IVXLCDM]").containsMatchIn(roman) || roman == "") return -1
+
+    val foundRoman = Regex("CM|CD|XC|XL|IX|IV|M|D|C|L|X|V|I").findAll(roman)
+    val res = mutableListOf<Int>()
+
+    for (i in foundRoman)
+        res.add(signToNumber[i.value] ?: 0)
+
+    return res.sum()
 }
 
 

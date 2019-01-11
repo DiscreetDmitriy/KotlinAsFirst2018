@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson8.task2
 
 /**
@@ -21,7 +22,7 @@ data class Square(val column: Int, val row: Int) {
      * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
      * Для клетки не в пределах доски вернуть пустую строку
      */
-    fun notation(): String = TODO()
+    fun notation(): String = if (this.inside()) ('a' + this.column - 1).toString() + this.row else ""
 }
 
 /**
@@ -31,7 +32,12 @@ data class Square(val column: Int, val row: Int) {
  * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
  * Если нотация некорректна, бросить IllegalArgumentException
  */
-fun square(notation: String): Square = TODO()
+fun square(notation: String): Square =
+        if (!Regex("[a-h][1-8]").matches(notation))
+            throw IllegalArgumentException()
+        else
+            Square(notation[0] + 1 - 'a', notation[1] - '0')
+
 
 /**
  * Простая
@@ -117,7 +123,31 @@ fun bishopMoveNumber(start: Square, end: Square): Int = TODO()
  *          bishopTrajectory(Square(1, 3), Square(6, 8)) = listOf(Square(1, 3), Square(6, 8))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun bishopTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun bishopTrajectory(start: Square, end: Square): List<Square> {
+    val res = mutableListOf(start)
+    val firstDif = (end.row + end.column - res.last().row - res.last().column) / 2
+    val secondDif = (end.row - end.column - res.last().row + res.last().column) / 2
+
+    if ((start.column + start.row) % 2 != (end.row + end.column) % 2)
+        return emptyList()
+
+    if (firstDif != 0)
+        res.add(Square(
+                res.last().column + firstDif,
+                res.last().row + firstDif))
+
+    if (secondDif != 0)
+        res.add(Square(
+                res.last().column - secondDif,
+                res.last().row + secondDif))
+
+    if (res.size == 3 && !res[1].inside())
+        res[1] = Square(
+                start.column - secondDif,
+                start.row + secondDif)
+
+    return res
+}
 
 /**
  * Средняя

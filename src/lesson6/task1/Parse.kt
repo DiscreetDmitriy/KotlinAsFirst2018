@@ -92,8 +92,10 @@ fun dateStrToDigit(str: String): String {
     }
 }
 
-val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
-        "июля", "августа", "сентября", "октября", "ноября", "декабря")
+val months = listOf(
+    "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря"
+)
 
 /**
  * Средняя
@@ -136,9 +138,9 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String =
-        if (!Regex("""[^+0-9()\s-]""").containsMatchIn(phone) && Regex("\\d").containsMatchIn(phone))
-            Regex("""[-\s()]""").replace(phone, "")
-        else ""
+    if (!Regex("""[^+0-9()\s-]""").containsMatchIn(phone) && Regex("\\d").containsMatchIn(phone))
+        Regex("""[-\s()]""").replace(phone, "")
+    else ""
 
 /**
  * Средняя
@@ -154,10 +156,10 @@ fun bestLongJump(jumps: String): Int {
     if (Regex("""[^-%\s0-9]""").containsMatchIn(jumps)) return -1
 
     return jumps
-            .split("\\s".toRegex())
-            .filter { it.matches("\\d+".toRegex()) }
-            .map { it.toInt() }
-            .max() ?: -1
+        .split("\\s".toRegex())
+        .filter { it.matches("\\d+".toRegex()) }
+        .map { it.toInt() }
+        .max() ?: -1
 }
 
 /**
@@ -171,11 +173,11 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int =
-        jumps
-                .split(Regex("""(?<=[+%-])\s"""))
-                .filter { it.contains('+') }
-                .map { it.split(" ")[0].toInt() }
-                .max() ?: -1
+    jumps
+        .split(Regex("""(?<=[+%-])\s"""))
+        .filter { it.contains('+') }
+        .map { it.split(" ")[0].toInt() }
+        .max() ?: -1
 
 /**
  * Сложная
@@ -232,8 +234,10 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    val signToNumber = mapOf("I" to 1, "IV" to 4, "V" to 5, "IX" to 9, "X" to 10, "XL" to 40,
-            "L" to 50, "XC" to 90, "C" to 100, "CD" to 400, "D" to 500, "CM" to 900, "M" to 1000)
+    val signToNumber = mapOf(
+        "I" to 1, "IV" to 4, "V" to 5, "IX" to 9, "X" to 10, "XL" to 40,
+        "L" to 50, "XC" to 90, "C" to 100, "CD" to 400, "D" to 500, "CM" to 900, "M" to 1000
+    )
 
     if (Regex("[^IVXLCDM]").containsMatchIn(roman) || roman == "") return -1
 

@@ -4,7 +4,6 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
-import lesson3.task1.isPrime
 import lesson3.task1.maxDivisor
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -15,15 +14,15 @@ import kotlin.math.sqrt
  * Найти все корни уравнения x^2 = y
  */
 fun sqRoots(y: Double) =
-        when {
-            y < 0 -> listOf()
-            y == 0.0 -> listOf(0.0)
-            else -> {
-                val root = sqrt(y)
-                // Результат!
-                listOf(-root, root)
-            }
+    when {
+        y < 0 -> listOf()
+        y == 0.0 -> listOf(0.0)
+        else -> {
+            val root = sqrt(y)
+            // Результат!
+            listOf(-root, root)
         }
+    }
 
 /**
  * Пример
@@ -97,11 +96,8 @@ fun squares(vararg array: Int) = squares(array.toList()).toTypedArray()
  * "А роза упала на лапу Азора" является палиндромом.
  */
 fun isPalindrome(str: String): Boolean {
-    val lowerCase = str.toLowerCase().filter { it != ' ' }
-    for (i in 0..lowerCase.length / 2) {
-        if (lowerCase[i] != lowerCase[lowerCase.length - i - 1]) return false
-    }
-    return true
+    val toLowerCase = str.filterNot { it == ' ' }.toLowerCase()
+    return toLowerCase == toLowerCase.reversed()
 }
 
 /**
@@ -150,7 +146,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
 fun times(a: List<Double>, b: List<Double>): Double =
-        a.mapIndexed { index, d -> d * b[index] }.sum()
+    a.mapIndexed { index, d -> d * b[index] }.sum()
 
 
 /**
@@ -237,7 +233,7 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     val difference = 'a'.toInt() - 10
     return convert(n, base)
-            .joinToString(separator = "") { if (it > 9) "${it.toChar() + difference}" else "$it" }
+        .joinToString(separator = "") { if (it > 9) "${it.toChar() + difference}" else "$it" }
 }
 
 /**
@@ -248,7 +244,14 @@ fun convertToString(n: Int, base: Int): String {
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int =
-        digits.reversed().foldRightIndexed(0) { index, i, acc -> acc + i * base.toDouble().pow(index).toInt() }
+    digits
+        .reversed()
+        .foldRightIndexed(0) { index, i, acc ->
+            acc + i * base
+                .toDouble()
+                .pow(index)
+                .toInt()
+        }
 
 /**
  * Сложная
@@ -278,8 +281,10 @@ fun decimalFromString(str: String, base: Int): Int {
  */
 fun roman(n: Int): String {
     val digits =
-            mapOf("M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
-                    "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1)
+        mapOf(
+            "M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
+            "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1
+        )
     var n1 = n
     val str = mutableListOf<String>()
     for ((roman, arabian) in digits) {
@@ -321,83 +326,83 @@ fun russian(n: Int): String {
     res1.removeIf { it == "" }
     res2.removeIf { it == "" }
     return res2.joinToString(separator = " ")
-            .plus(if (res2.isNotEmpty() && res1.isNotEmpty()) " " else "") + res1.joinToString(separator = " ")
+        .plus(if (res2.isNotEmpty() && res1.isNotEmpty()) " " else "") + res1.joinToString(separator = " ")
 }
 
 fun lastDigit(n: Int): String =
-        when (n % 10) {
-            1 -> "один"
-            2 -> "два"
-            3 -> "три"
-            4 -> "четыре"
-            5 -> "пять"
-            6 -> "шесть"
-            7 -> "семь"
-            8 -> "восемь"
-            9 -> "девять"
-            else -> ""
-        }
+    when (n % 10) {
+        1 -> "один"
+        2 -> "два"
+        3 -> "три"
+        4 -> "четыре"
+        5 -> "пять"
+        6 -> "шесть"
+        7 -> "семь"
+        8 -> "восемь"
+        9 -> "девять"
+        else -> ""
+    }
 
 fun lastTwoDigits(n: Int): String =
-        when (n % 100) {
-            11 -> "одиннадцать"
-            12 -> "двенадцать"
-            13 -> "тринадцать"
-            14 -> "четырнадцать"
-            15 -> "пятнадцать"
-            16 -> "шестнадцать"
-            17 -> "семнадцать"
-            18 -> "восемнадцать"
-            19 -> "девятнадцать"
-            else -> ""
-        }
+    when (n % 100) {
+        11 -> "одиннадцать"
+        12 -> "двенадцать"
+        13 -> "тринадцать"
+        14 -> "четырнадцать"
+        15 -> "пятнадцать"
+        16 -> "шестнадцать"
+        17 -> "семнадцать"
+        18 -> "восемнадцать"
+        19 -> "девятнадцать"
+        else -> ""
+    }
 
 fun secondLastDigit(n: Int): String =
-        when (n / 10 % 10) {
-            1 -> "десять"
-            2 -> "двадцать"
-            3 -> "тридцать"
-            4 -> "сорок"
-            5 -> "пятьдесят"
-            6 -> "шестьдесят"
-            7 -> "семьдесят"
-            8 -> "восемьдесят"
-            9 -> "девяносто"
-            else -> ""
-        }
+    when (n / 10 % 10) {
+        1 -> "десять"
+        2 -> "двадцать"
+        3 -> "тридцать"
+        4 -> "сорок"
+        5 -> "пятьдесят"
+        6 -> "шестьдесят"
+        7 -> "семьдесят"
+        8 -> "восемьдесят"
+        9 -> "девяносто"
+        else -> ""
+    }
 
 fun hundreds(n: Int): String =
-        when (n / 100 % 10) {
-            1 -> "сто"
-            2 -> "двести"
-            3 -> "триста"
-            4 -> "четыреста"
-            5 -> "пятьсот"
-            6 -> "шестьсот"
-            7 -> "семьсот"
-            8 -> "восемьсот"
-            9 -> "девятьсот"
-            else -> ""
-        }
+    when (n / 100 % 10) {
+        1 -> "сто"
+        2 -> "двести"
+        3 -> "триста"
+        4 -> "четыреста"
+        5 -> "пятьсот"
+        6 -> "шестьсот"
+        7 -> "семьсот"
+        8 -> "восемьсот"
+        9 -> "девятьсот"
+        else -> ""
+    }
 
 fun lastDigitInThousands(n: Int): String =
-        when (n % 10) {
-            1 -> "одна"
-            2 -> "две"
-            3 -> "три"
-            4 -> "четыре"
-            5 -> "пять"
-            6 -> "шесть"
-            7 -> "семь"
-            8 -> "восемь"
-            9 -> "девять"
-            else -> ""
-        }
+    when (n % 10) {
+        1 -> "одна"
+        2 -> "две"
+        3 -> "три"
+        4 -> "четыре"
+        5 -> "пять"
+        6 -> "шесть"
+        7 -> "семь"
+        8 -> "восемь"
+        9 -> "девять"
+        else -> ""
+    }
 
 fun thousands(n: Int): String =
-        when {
-            n % 10 == 1 && n % 100 != 11 -> "тысяча"
-            n % 10 in 2..4 && n % 100 !in 12..14 -> "тысячи"
-            else -> "тысяч"
-        }
+    when {
+        n % 10 == 1 && n % 100 != 11 -> "тысяча"
+        n % 10 in 2..4 && n % 100 !in 12..14 -> "тысячи"
+        else -> "тысяч"
+    }
 

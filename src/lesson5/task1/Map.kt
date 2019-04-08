@@ -10,8 +10,9 @@ package lesson5.task1
  * игнорируется.
  */
 fun shoppingListCost(
-        shoppingList: List<String>,
-        costs: Map<String, Double>): Double {
+    shoppingList: List<String>,
+    costs: Map<String, Double>
+): Double {
     var totalCost = 0.0
 
     for (item in shoppingList) {
@@ -31,8 +32,9 @@ fun shoppingListCost(
  * для которых телефон начинается с заданного кода страны `countryCode`
  */
 fun filterByCountryCode(
-        phoneBook: MutableMap<String, String>,
-        countryCode: String) {
+    phoneBook: MutableMap<String, String>,
+    countryCode: String
+) {
     val namesToRemove = mutableListOf<String>()
 
     for ((name, phone) in phoneBook) {
@@ -53,8 +55,9 @@ fun filterByCountryCode(
  * и вернуть отфильтрованный текст
  */
 fun removeFillerWords(
-        text: List<String>,
-        vararg fillerWords: String): List<String> {
+    text: List<String>,
+    vararg fillerWords: String
+): List<String> {
     val fillerWordSet = setOf(*fillerWords)
 
     val res = mutableListOf<String>()
@@ -172,7 +175,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? =
-        stuff.filter { it.value.first == kind }.minBy { it.value.second }?.key
+    stuff.filter { it.value.first == kind }.minBy { it.value.second }?.key
 
 /**
  * Сложная
@@ -255,8 +258,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean = word
-        .toLowerCase()
-        .all { char -> char in chars.map { it.toLowerCase() } }
+    .toLowerCase()
+    .all { char -> char in chars.map { it.toLowerCase() } }
 
 /**
  * Средняя
@@ -286,7 +289,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean =
-        words.any { word -> word.toSortedSet() in (words - word).map { it.toSortedSet() } }
+    words.any { word -> word.toSortedSet() in (words - word).map { it.toSortedSet() } }
 
 /**
  * Сложная
